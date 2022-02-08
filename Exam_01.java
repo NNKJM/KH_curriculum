@@ -1,25 +1,23 @@
 package khie;
 /*
- *  [문제] 이름과 국어점수, 영어점수, 수학점수, 자바점수를 키보드로 입력을 받아서 성적을 처리해 보자.
- *            총점, 평균까지 출력해 보자.
- *  조건1. 평균은 소숫점 두 자리까지 입력할 것.
+ * 지방, 탄수화물, 단백질 칼로리의 합계를 계산하는 프로그램
+ * 총 칼로리 : 지방 9칼로리/그램, 탄수화물 & 단백질 4칼로리/그램
  */
+
+import java.util.Scanner;
 
 public class Exam_01 {
 	public static void main(String[] args) {
-		String name = args[0];
-		int korean = Integer.parseInt(args[1]);
-		int english = Integer.parseInt(args[2]);
-		int math = Integer.parseInt(args[3]);
-		int java = Integer.parseInt(args[4]);
-		int total = korean + english + math + java;
-		double avg = total / 4.0;
-		System.out.println(name + "의 성적표");
-		System.out.println("국어 점수 : " + korean + "점");
-		System.out.println("영어 점수 : " + english + "점");
-		System.out.println("수학 점수 : " + math + "점");
-		System.out.println("자바 점수 : " + java + "점");
-		System.out.println("총    점 : " + total + "점");
-		System.out.printf("평    균 : %.2f\n", avg + "점");
+	Scanner sc = new Scanner(System.in);
+	System.out.print("지방의 그램을 입력하세요 : ");
+	int fat = sc.nextInt();
+	System.out.print("탄수화물의 그램을 입력하세요 : ");
+	int carbohydrate = sc.nextInt();
+	System.out.print("단백질의 그램을 입력하세요 : ");
+	int protein = sc.nextInt();
+	System.out.printf("총칼로리 : %d cal", (fat*9)+(carbohydrate*4)+(protein*4));
+	
+	sc.close();
+	
 	}
 }
