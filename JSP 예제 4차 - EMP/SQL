@@ -1,8 +1,0 @@
-EMPNO : 부서번호
-ENAME : 이름
-JOB : 업무
-MGR : 상사
-HIREDATE : 고용일
-SAL : 급여
-COMM : 보너스
-DEPTNO : 부서번호
