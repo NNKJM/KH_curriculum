@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Document Type Definition 
+	-작성한 문서가 어떤 문서인지에 대해서 정의하는 것 
+	-하나의 시스템 내에서 사용할 XML 데이터의 구조를 정의하여 유효성을 점검시 사용 -->
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace 명은 패키지명을 포함하여 DAO 인터페이스 이름으로 작성하는 것이 관례 namespace 명은 mapper 들을 구분하는 식별자로 사용됨 -->
+<mapper namespace="com.spring.model.MemberDAO">
+
+	<select id="all" resultType="com.spring.model.MemberDTO">
+		select * from member10 order by num desc
+	</select>
+	
+	<insert id="add" parameterType="com.spring.model.MemberDTO">
+		insert into member10 values((select max(num) from member10) + 1, #{memid}, #{memname}, #{pwd}, #{age}, #{mileage}, #{job}, #{addr}, sysdate)
+	</insert>
+	
+	<select id="content" parameterType="int" resultType="com.spring.model.MemberDTO">
+		select * from member10 where num = #{num}
+	</select>
+	
+	<select id="edit" parameterType="com.spring.model.MemberDTO">
+		update member10 set age = #{age}, mileage = #{mileage}, job = #{job}, addr = #{addr} where num = #{num}
+	</select>
+	
+	<select id="del" parameterType="int">
+		delete from member10 where num = #{num}
+	</select>
+	
+	<!-- 조건식 기호를 사용할 때 태그로 인식할 수 있으므로 문자열을 인식시켜야 함
+	형식) <![CDATA[쿼리문]]> -->
+	<select id="seq" parameterType="int">
+		<![CDATA[
+			update member10 set num = num - 1 where num > #{num}
+		]]>
+	</select>
+	
+	<select id="id" resultType="com.spring.model.MemberDTO">
+		select * from member10 where memid like '%' || #{keyword} || '%' order by num desc
+	</select>
+	<select id="name" resultType="com.spring.model.MemberDTO">
+		select * from member10 where memname like '%' || #{keyword} || '%' order by num desc
+	</select>
+	<select id="job" resultType="com.spring.model.MemberDTO">
+		select * from member10 where job like '%' || #{keyword} || '%' order by num desc
+	</select>
+	
+</mapper>
