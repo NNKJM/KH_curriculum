@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao">
+	<select id="all" resultType="dto">
+		select emp.*, dept.dname, dept.loc from emp inner join dept on emp.deptno = dept.deptno order by hiredate desc
+	</select>
+	
+	<insert id="add" parameterType="dto">
+		insert into emp values(#{empno}, #{ename}, #{job}, #{mgr}, sysdate, #{sal}, #{comm}, #{deptno})
+	</insert>
+	
+	<select id="content" parameterType="int" resultType="dto">
+		select emp.*, dept.dname, dept.loc from emp inner join dept on emp.deptno = dept.deptno where empno = #{num}
+	</select>
+	
+	<select id="edit" parameterType="dto">
+		update emp set job = #{job}, mgr = #{mgr}, sal = #{sal}, comm = #{comm}, deptno = #{deptno} where empno = #{empno}
+	</select>
+	
+	<select id="del" parameterType="int">
+		delete from emp where empno = #{empno}
+	</select>
+	
+	<select id="dept" resultType="dept">
+		select * from dept order by deptno
+	</select>
+
+	<select id="job" resultType="String">
+		select distinct(job) from emp order by job
+	</select>
+	
+	<select id="mgr" parameterType="int" resultType="String">
+		select m.ename as mname from emp e inner join emp m on e.mgr = m.empno where e.empno = #{empno}
+	</select>
+</mapper>
