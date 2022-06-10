@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="boardDao">
+
+	<select id="count" resultType="int">
+		select count(*) from board
+	</select>
+	
+	<select id="list" parameterType="pageDto" resultType="boardDto">
+		<![CDATA[
+			select * from (select b.*, row_number() over(order by board_no desc) rnum from board b) where rnum >= #{startNo} and rnum <= #{endNo}
+	    ]]>
+	</select>
+	
+	<!-- 
+	       일반적으로 DB 작업을 하다 보면 먼저 사전에 어떤 값을 가져와서 해당 값을 증가시킨후 입력하거나 혹은 입력된 후에 증가값을 가져올 필요가 있는 경우가 많이 발생.
+	       이런 경우에는 MyBatis에서 제공하는 selectKey 태그를 이용하면 별도의 쿼리 로직을 사용할 필요 없이 일괄 처리 작업을 할 수 있게 됨
+	    keyProperty 속성은 해당 결과값이 들어갈 DTO 객체의 멤버 변수명이 오면 됨
+	    order 속성은 해당 쿼리문의 실행 순서를 의미함 (Ex. BEFORE라고 하면 insert 쿼리문 이전에 selectKey가 실행이 되고, AFTER라고 하면 insert 쿼리문 이후에 selectKey가 실행이 됨)
+	       주의사항 : 반드시 멤버변수에 해당하는 setter() 와 getter() 메서드가 존재해야 함 
+	 -->
+	<insert id="add" parameterType="boardDto">
+		<selectKey resultType="int" keyProperty="board_no" order="BEFORE">
+			select max(board_no) from board
+		</selectKey>
+		insert into board values(#{board_no} + 1, #{board_writer}, #{board_title}, #{board_cont}, #{board_pwd}, default, sysdate, '')
+	</insert>
+	
+	
+	<update id="read" parameterType="int">
+		update board set board_hit = board_hit + 1 where board_no = #{no}
+	</update>
+	
+	
+	<select id="content" parameterType="int" resultType="boardDto">
+		select * from board where board_no = #{no}
+	</select>
+	
+	
+	<update id="modify" parameterType="boardDto">
+		update board set board_title = #{board_title}, board_cont = #{board_cont}, board_update = sysdate where board_no = #{board_no}
+	</update>
+	
+	
+	<delete id="del" parameterType="int">
+		delete from board where board_no = #{no}
+	</delete>
+	
+	
+	<update id="seq" parameterType="int">
+		<![CDATA[
+			update board set board_no = board_no - 1 where board_no > #{no}
+		]]>	
+	</update>
+	
+	<select id="title" resultType="int">
+		select count(*) from board where board_title like '%' || #{keyword} || '%'
+	</select>
+	
+	<select id="cont" resultType="int">
+		select count(*) from board where board_cont like '%' || #{keyword} || '%'
+	</select>	
+	
+	<select id="title_cont" resultType="int">
+		select count(*) from board where board_title like '%' || #{keyword} || '%' or board_cont like '%' || #{keyword} || '%'
+	</select>	
+	
+	<select id="writer" resultType="int">
+		select count(*) from board where board_writer like '%' || #{keyword} || '%'
+	</select>
+	
+	<select id="title_List" parameterType="pageDto" resultType="boardDto">
+		<![CDATA[
+			select * from (select b.*, row_number() over(order by board_no desc) rnum from board b where board_title like '%' || #{keyword} || '%') where rnum >= #{startNo} and rnum <= #{endNo}
+   		]]>
+	</select>
+		<select id="cont_List" parameterType="pageDto" resultType="boardDto">
+		<![CDATA[
+			select * from (select b.*, row_number() over(order by board_no desc) rnum from board b where board_cont like '%' || #{keyword} || '%') where rnum >= #{startNo} and rnum <= #{endNo}
+   		]]>
+	</select>
+		<select id="title_cont_List" parameterType="pageDto" resultType="boardDto">
+		<![CDATA[
+			select * from (select b.*, row_number() over(order by board_no desc) rnum from board b where board_title like '%' || #{keyword} || '%' or board_cont like '%' || #{keyword} || '%') where rnum >= #{startNo} and rnum <= #{endNo}
+   		]]>
+	</select>
+		<select id="writer_List" parameterType="pageDto" resultType="boardDto">
+		<![CDATA[
+			select * from (select b.*, row_number() over(order by board_no desc) rnum from board b where board_writer like '%' || #{keyword} || '%') where rnum >= #{startNo} and rnum <= #{endNo}
+   		]]>
+	</select>
+</mapper>
